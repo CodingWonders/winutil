@@ -107,6 +107,10 @@ function Remove-Packages {
                 $_ -NotLike "*Wifi*"
             }
 
+        # Reverse package listings for less errors regarding superseded packages
+        Write-Host "Reversing package listings..."
+        $pkglist = $pkglist[-1..-($pkglist.Length)]
+
         $failedCount = 0
 
         foreach ($pkg in $pkglist) {
