@@ -223,13 +223,23 @@ function Remove-Packages {
             Write-Host "Some packages could not be removed. Do not worry: your image will still work fine. This can happen if the package is permanent or has been superseded by a newer one."
             if ($erroredPackages.Count -gt 0)
             {
-                $erroredPackages
                 $ErrorMessageComparer = [ErroredPackageComparer]::new("ErrorMessage")
                 $erroredPackages.Sort($ErrorMessageComparer)
+
+                $previousErroredPackage = $erroredPackage[0]
+                $counter = 0
+                Write-Host ""
+                Write-Host "Failed to remove following packages due to reason '$($previousErroredPackage.ErrorMessage)':"
                 foreach ($erroredPackage in $erroredPackages) {
-                    Write-Host "Failed to remove Package $($erroredPackage.PackageName) due to $($erroredPackage.ErrorMessage)" -NoNewline
+                    if ($erroredPackage.ErrorMessage -ne $previousErroredPackage.ErrorMessage) {
+                        $counter = 0
+                        Write-Host ""
+                        Write-Host "Failed to remove following packages due to reason '$($erroredPackage.ErrorMessage)':"
+                    }
+                    $counter += 1
+                    Write-Host "  $counter) $($erroredPackage.PackageName)" -NoNewline
+                    $previousErroredPackage = $erroredPackage
                 }
-                #$erroredPackages
             }
         }
     } catch {
