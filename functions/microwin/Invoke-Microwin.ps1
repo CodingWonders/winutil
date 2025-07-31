@@ -58,6 +58,8 @@ public class PowerManagement {
     $injectDrivers = $sync.MicrowinInjectDrivers.IsChecked
     $importDrivers = $sync.MicrowinImportDrivers.IsChecked
 
+    $WPBT = $sync.MicroWinWPBT.IsChecked
+
     $importVirtIO = $sync.MicrowinCopyVirtIO.IsChecked
 
     $mountDir = $sync.MicrowinMountDir.Text
@@ -169,6 +171,13 @@ public class PowerManagement {
             } else {
                 Write-Host "Path to drivers is invalid continuing without driver injection"
             }
+        }
+
+        if ($WPBT) {
+            Write-Host "Disabling WPBT Execution"
+            reg load HKLM\zSYSTEM "$($scratchDir)\Windows\System32\config\SYSTEM"
+            reg add HKLM\zSYSTEM\CurrentControlSet\Control\Session Manager /v DisableWpbtExecution /t REG_DWORD /d 1 /f
+            reg unload HKLM\zSYSTEM
         }
 
         if ($importVirtIO) {
