@@ -57,6 +57,7 @@ function Invoke-WPFButton {
         "WPFGetInstalledTweaks" {Invoke-WPFGetInstalled -CheckBox "tweaks"}
         "WPFGetIso" {Invoke-MicrowinGetIso}
         "WPFMicrowin" {Invoke-Microwin}
+        "MicrowinAutoConfigBtn" {Invoke-MicrowinAutoConfigDialog}
         "WPFCloseButton" {Invoke-WPFCloseButton}
         "MicrowinScratchDirBT" {Invoke-ScratchDialog}
         "WPFWinUtilInstallPSProfile" {Invoke-WinUtilInstallPSProfile}

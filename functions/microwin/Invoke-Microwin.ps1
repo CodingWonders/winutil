@@ -250,6 +250,19 @@ public class PowerManagement {
 
         Write-Host "Create unattend.xml"
 
+        if (($sync.MicrowinAutoConfigBox.Text -ne "") -and (Test-Path "$($sync.MicrowinAutoConfigBox.Text)"))
+        {
+            try
+            {
+                Write-Host "A configuration file has been specified. Copying to WIM file..."
+                Copy-Item "$($sync.MicrowinAutoConfigBox.Text)" "$($scratchDir)\winutil-config.json"
+            }
+            catch
+            {
+                Write-Host "The config file could not be copied. Continuing without it..."
+            }
+        }
+
         if ($sync.MicrowinUserName.Text -eq "")
         {
             Microwin-NewUnattend -userName "User"
@@ -280,7 +293,7 @@ public class PowerManagement {
         Copy-Item "$env:temp\FirstStartup.ps1" "$($scratchDir)\Windows\FirstStartup.ps1" -force
         Write-Host "Done copy FirstRun.ps1"
 
-        Write-Host "Copy link to winutil.ps1 into the ISO"
+        Write-Host "Copy link to winutil.ps1 into the ISO" # Why have we still got this Write-Host???
         $desktopDir = "$($scratchDir)\Windows\Users\Default\Desktop"
         New-Item -ItemType Directory -Force -Path "$desktopDir"
         dism /English /image:$($scratchDir) /set-profilepath:"$($scratchDir)\Windows\Users\Default"
