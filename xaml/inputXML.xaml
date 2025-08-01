@@ -1464,14 +1464,14 @@
                             <CheckBox Name="MicroWinUnsupported" Content="Allow this PC upgarde to Windows 11" Margin="{DynamicResource MicrowinCheckBoxMargin}" IsChecked="False" ToolTip="If enabled then it will allow you to upgrade your PC to Windows 11 if your PC does not support Windows 11 yet. This is good for if you do not have a USB and want to upgarde to Windows 11 on unsupported OS. This is good for if you do not have a USB and want to upgarde to Windows 11 on unsupported OS. This is good for if you do not have a USB and want to upgarde to Windows 11 on unsupported Hardware."/>
                             <CheckBox Name="MicroWinESD" Content="Convert this image to ESD (This will take longer)" Margin="{DynamicResource MicrowinCheckBoxMargin}" IsChecked="False" ToolTip="If enabled then MicroWin will convert this image to ESD format. This is good for if you have a small USB and want to convert your ISO to ESD format."/>
                             <TextBlock Margin="6" Padding="1" TextWrapping="Wrap">WinUtil configuration file (JSON)</TextBlock>
-                            <TextBox Name="MicrowinAutoConfigBox" Background="Transparent" BorderBrush="{MainForegroundColor}"
+                            <TextBox Name="MicrowinAutoConfigBox" Background="Transparent" BorderBrush="{DynamicResource MainForegroundColor}"
                                     Text=""
                                     Margin="2"
                                     IsReadOnly="False"
                                     ToolTip="Path of your configuration file"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
-                                    Foreground="{LabelboxForegroundColor}">
+                                    Foreground="{DynamicResource LabelboxForegroundColor}">
                             </TextBox>
                             <Button Name="MicrowinAutoConfigBtn" Margin="2" Padding="1">
                                 <Button.Content>
