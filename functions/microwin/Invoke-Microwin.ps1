@@ -293,7 +293,6 @@ public class PowerManagement {
         Copy-Item "$env:temp\FirstStartup.ps1" "$($scratchDir)\Windows\FirstStartup.ps1" -force
         Write-Host "Done copy FirstRun.ps1"
 
-        Write-Host "Copy link to winutil.ps1 into the ISO" # Why have we still got this Write-Host???
         $desktopDir = "$($scratchDir)\Windows\Users\Default\Desktop"
         New-Item -ItemType Directory -Force -Path "$desktopDir"
         dism /English /image:$($scratchDir) /set-profilepath:"$($scratchDir)\Windows\Users\Default"
