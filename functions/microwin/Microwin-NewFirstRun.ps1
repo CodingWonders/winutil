@@ -90,6 +90,14 @@ function Microwin-NewFirstRun {
 
     if (Test-Path -Path "$env:HOMEDRIVE\winutil-config.json")
     {
+        try {
+            Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+        } catch {
+            $errorMessage = 'Execution policy is not set to RemoteSigned. Please set it manually and try again.'
+            $errorMessage | Out-File -FilePath "$env:TEMP\install.log" -Force
+            return
+        }
+
         Write-Host "Configuration file detected. Applying..."
         iex "& { $(irm christitus.com/win) } -Config `"$env:HOMEDRIVE\winutil-config.json`" -Run"
     }
