@@ -419,7 +419,7 @@ public class PowerManagement {
                 Remove-Item "$mountDir\sources\install.wim"
                 Write-Host "Converted install image to ESD."
             } catch {
-                Start-Process -FilePath "$env:SystemRoot\System32\dism.exe" -ArgumentList "/export-image","/sourceimagefile:$mountDir\sources\install.wim","/sourceindex:1","/destinationimagefile:$mountDir\sources\install.esd","/compress:recovery" -Wait -NoNewWindow
+                Start-Process -FilePath "$env:SystemRoot\System32\dism.exe" -ArgumentList "/export-image /sourceimagefile:`"$mountDir\sources\install.wim`" /sourceindex:1 /destinationimagefile:`"$mountDir\sources\install.esd`" /compress:recovery" -Wait -NoNewWindow
                 Remove-Item "$mountDir\sources\install.wim"
                 Write-Host "Converted install image to ESD."
             }
