@@ -90,10 +90,21 @@ function Microwin-NewFirstRun {
 
     if (Test-Path -Path "$env:HOMEDRIVE\winutil-config.json")
     {
-        Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
-
         Write-Host "Configuration file detected. Applying..."
-        Start-Process powershell -Verb RunAs -ArgumentList "powershell -ExecutionPolicy Bypass -NoProfile -Command `"& { (irm christitus.com/win) } -Config `"$env:HOMEDRIVE\winutil-config.json`" -Run`""
+
+        Invoke-RestMethod -Uri "https://christitus.com/win" -OutFile "$env:HOMEDRIVE\winutil.ps1"
+        # Properly escaped command with ampersand quoted
+        $cmd = '$env:HOMEDRIVE\winutil.ps1 -Config ''$env:HOMEDRIVE\winutil-config.json'' -Run; Read-Host -Prompt ''Press Enter to exit'''
+
+        # Start a new elevated PowerShell terminal
+        Start-Process powershell.exe -Verb RunAs -ArgumentList @(
+            "-NoExit",
+            "-NoProfile",
+            "-ExecutionPolicy", "Bypass",
+            "-Command", $cmd
+        )
+        Remove-Item -Path "$env:HOMEDRIVE\winutil.ps1" -Force
+        Remove-Item -Path "$env:HOMEDRIVE\winutil-config.json" -Force
     }
 '@
     $firstRun | Out-File -FilePath "$env:temp\FirstStartup.ps1" -Force
