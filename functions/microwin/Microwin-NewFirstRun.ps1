@@ -112,16 +112,16 @@ function Microwin-NewFirstRun {
                 "-ExecutionPolicy", "Bypass",
                 "-Command", $cmd
             ) -PassThru -WindowStyle Hidden
-            
+
             "WinUtil process started (PID: $($process.Id)). Waiting for completion..." | Out-File -FilePath "$env:HOMEDRIVE\windows\LogFirstRun.txt" -Append -NoClobber
-            
+
             # Wait for the process to complete
             $process.WaitForExit()
             "WinUtil process completed with exit code: $($process.ExitCode)" | Out-File -FilePath "$env:HOMEDRIVE\windows\LogFirstRun.txt" -Append -NoClobber
-            
+
             # Give a small delay to ensure all operations are complete
             Start-Sleep -Seconds 3
-            
+
             "Cleaning up temporary files..." | Out-File -FilePath "$env:HOMEDRIVE\windows\LogFirstRun.txt" -Append -NoClobber
             if (Test-Path "$env:HOMEDRIVE\winutil.ps1") {
                 Remove-Item -Path "$env:HOMEDRIVE\winutil.ps1" -Force
