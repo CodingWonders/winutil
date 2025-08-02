@@ -47,3 +47,5 @@ test.ps1
 winutil.ps1
 
 binary/
+
+.preprocessor_hashes.json
