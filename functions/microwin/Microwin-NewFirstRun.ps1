@@ -88,23 +88,45 @@ function Microwin-NewFirstRun {
     reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.AccountHealth" /f
     reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.AccountHealth" /v Enabled /t REG_DWORD /d 0 /f
 
+    # Log configuration file check
+    "Checking for configuration file at: $env:HOMEDRIVE\winutil-config.json" | Out-File -FilePath "$env:HOMEDRIVE\windows\LogFirstRun.txt" -Append -NoClobber
+    
     if (Test-Path -Path "$env:HOMEDRIVE\winutil-config.json")
     {
+        "Configuration file detected. Applying auto-configuration..." | Out-File -FilePath "$env:HOMEDRIVE\windows\LogFirstRun.txt" -Append -NoClobber
         Write-Host "Configuration file detected. Applying..."
 
-        Invoke-RestMethod -Uri "https://christitus.com/win" -OutFile "$env:HOMEDRIVE\winutil.ps1"
-        # Properly escaped command with ampersand quoted
-        $cmd = '$env:HOMEDRIVE\winutil.ps1 -Config ''$env:HOMEDRIVE\winutil-config.json'' -Run; Read-Host -Prompt ''Press Enter to exit'''
+        try {
+            "Downloading WinUtil script from christitus.com..." | Out-File -FilePath "$env:HOMEDRIVE\windows\LogFirstRun.txt" -Append -NoClobber
+            Invoke-RestMethod -Uri "https://christitus.com/win" -OutFile "$env:HOMEDRIVE\winutil.ps1"
+            "WinUtil script downloaded successfully" | Out-File -FilePath "$env:HOMEDRIVE\windows\LogFirstRun.txt" -Append -NoClobber
+            
+            # Properly escaped command with ampersand quoted
+            $cmd = '$env:HOMEDRIVE\winutil.ps1 -Config ''$env:HOMEDRIVE\winutil-config.json'' -Run; Read-Host -Prompt ''Press Enter to exit'''
+            "Prepared command: $cmd" | Out-File -FilePath "$env:HOMEDRIVE\windows\LogFirstRun.txt" -Append -NoClobber
 
-        # Start a new elevated PowerShell terminal
-        Start-Process powershell.exe -Verb RunAs -ArgumentList @(
-            "-NoExit",
-            "-NoProfile",
-            "-ExecutionPolicy", "Bypass",
-            "-Command", $cmd
-        )
-        Remove-Item -Path "$env:HOMEDRIVE\winutil.ps1" -Force
-        Remove-Item -Path "$env:HOMEDRIVE\winutil-config.json" -Force
+            # Start a new elevated PowerShell terminal
+            "Starting elevated PowerShell process with WinUtil..." | Out-File -FilePath "$env:HOMEDRIVE\windows\LogFirstRun.txt" -Append -NoClobber
+            Start-Process powershell.exe -Verb RunAs -ArgumentList @(
+                "-NoExit",
+                "-NoProfile",
+                "-ExecutionPolicy", "Bypass",
+                "-Command", $cmd
+            )
+            "WinUtil process started successfully" | Out-File -FilePath "$env:HOMEDRIVE\windows\LogFirstRun.txt" -Append -NoClobber
+            
+            "Cleaning up temporary files..." | Out-File -FilePath "$env:HOMEDRIVE\windows\LogFirstRun.txt" -Append -NoClobber
+            Remove-Item -Path "$env:HOMEDRIVE\winutil.ps1" -Force
+            Remove-Item -Path "$env:HOMEDRIVE\winutil-config.json" -Force
+            "Cleanup completed" | Out-File -FilePath "$env:HOMEDRIVE\windows\LogFirstRun.txt" -Append -NoClobber
+        }
+        catch {
+            "Error during WinUtil auto-configuration: $($_.Exception.Message)" | Out-File -FilePath "$env:HOMEDRIVE\windows\LogFirstRun.txt" -Append -NoClobber
+            Write-Host "Error during WinUtil auto-configuration: $($_.Exception.Message)"
+        }
+    }
+    else {
+        "No configuration file found. Skipping auto-configuration." | Out-File -FilePath "$env:HOMEDRIVE\windows\LogFirstRun.txt" -Append -NoClobber
     }
 '@
     $firstRun | Out-File -FilePath "$env:temp\FirstStartup.ps1" -Force
