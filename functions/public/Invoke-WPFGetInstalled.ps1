@@ -9,38 +9,39 @@ function Invoke-WPFGetInstalled {
 
     #>
     param($checkbox)
-
-    if($sync.ProcessRunning) {
+    if ($sync.ProcessRunning) {
         $msg = "[Invoke-WPFGetInstalled] Install process is currently running."
         [System.Windows.MessageBox]::Show($msg, "Winutil", [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Warning)
         return
     }
 
-    if(($sync.WPFpreferChocolatey.IsChecked -eq $false) -and ((Test-WinUtilPackageManager -winget) -eq "not-installed") -and $checkbox -eq "winget") {
+    if (($sync.ChocoRadioButton.IsChecked -eq $false) -and ((Test-WinUtilPackageManager -winget) -eq "not-installed") -and $checkbox -eq "winget") {
         return
     }
-    $preferChoco = $sync.WPFpreferChocolatey.IsChecked
-    Invoke-WPFRunspace -ArgumentList $checkbox, $preferChoco -DebugPreference $DebugPreference -ScriptBlock {
-        param($checkbox, $preferChoco, $DebugPreference)
+    $managerPreference = $sync["ManagerPreference"]
 
+    Invoke-WPFRunspace -ParameterList @(("managerPreference", $managerPreference),("checkbox", $checkbox)) -DebugPreference $DebugPreference -ScriptBlock {
+        param (
+            [string]$checkbox,
+            [PackageManagers]$managerPreference
+        )
         $sync.ProcessRunning = $true
-        $sync.form.Dispatcher.Invoke([action]{ Set-WinUtilTaskbaritem -state "Indeterminate" })
+        $sync.form.Dispatcher.Invoke([action] { Set-WinUtilTaskbaritem -state "Indeterminate" })
 
-        if($checkbox -eq "winget") {
+        if ($checkbox -eq "winget") {
             Write-Host "Getting Installed Programs..."
+            switch ($managerPreference) {
+                "Choco"{$Checkboxes = Invoke-WinUtilCurrentSystem -CheckBox "choco"; break}
+                "Winget"{$Checkboxes = Invoke-WinUtilCurrentSystem -CheckBox $checkbox; break}
+            }
         }
-        if($checkbox -eq "tweaks") {
+        elseif ($checkbox -eq "tweaks") {
             Write-Host "Getting Installed Tweaks..."
-        }
-        if ($preferChoco -and $checkbox -eq "winget") {
-            $Checkboxes = Invoke-WinUtilCurrentSystem -CheckBox "choco"
-        }
-        else{
             $Checkboxes = Invoke-WinUtilCurrentSystem -CheckBox $checkbox
         }
 
         $sync.form.Dispatcher.invoke({
-            foreach($checkbox in $Checkboxes) {
+            foreach ($checkbox in $Checkboxes) {
                 $sync.$checkbox.ischecked = $True
             }
         })

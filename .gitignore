@@ -2,6 +2,7 @@
 
 # Configuration folder
 .vscode/
+.idea/
 
 ### Visual Studio ###
 
@@ -9,6 +10,9 @@
 .vs/
 
 winutil.pdb
+
+### Preprocessor Hashes ###
+.preprocessor_hashes.json
 
 ### Windows ###
 
@@ -46,6 +50,9 @@ True
 test.ps1
 winutil.ps1
 
+
 binary/
 
 .preprocessor_hashes.json
+# temporary excludes for docs
+.github/site/

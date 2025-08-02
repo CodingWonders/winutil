@@ -3,10 +3,11 @@
 [![Version](https://img.shields.io/github/v/release/ChrisTitusTech/winutil?color=%230567ff&label=Latest%20Release&style=for-the-badge)](https://github.com/ChrisTitusTech/winutil/releases/latest)
 ![GitHub Downloads (specific asset, all releases)](https://img.shields.io/github/downloads/ChrisTitusTech/winutil/winutil.ps1?label=Total%20Downloads&style=for-the-badge)
 [![](https://dcbadge.limes.pink/api/server/https://discord.gg/RUbZUZyByQ?theme=default-inverted&style=for-the-badge)](https://discord.gg/RUbZUZyByQ)
+[![Static Badge](https://img.shields.io/badge/Documentation-_?style=for-the-badge&logo=bookstack&color=grey)](https://winutil.christitus.com/)
 
 This utility is a compilation of Windows tasks I perform on each Windows system I use. It is meant to streamline *installs*, debloat with *tweaks*, troubleshoot with *config*, and fix Windows *updates*. I am extremely picky about any contributions to keep this project clean and efficient.
 
-![screen-install](./docs/assets/Title-Screen.png)
+![screen-install](https://raw.githubusercontent.com/Chris-Titus-Docs/winutil-docs/refs/heads/main/assets/images/Title-Screen.png)
 
 ## 💡 Usage
 
@@ -34,15 +35,41 @@ irm "https://christitus.com/win" | iex
 irm "https://christitus.com/windev" | iex
 ```
 
-If you have Issues, refer to [Known Issues](https://christitustech.github.io/winutil/KnownIssues/)
+If you have Issues, refer to [Known Issues](https://winutil.christitus.com/knownissues/)
 
 ## 🎓 Documentation
 
-### [WinUtil Official Documentation](https://christitustech.github.io/winutil/)
+> [!NOTE]
+> To contribute to the documentation, please visit [WinUtil Docs Repo](https://github.com/Chris-Titus-Docs/winutil-docs) for more info.
+
+### [WinUtil Official Documentation](https://winutil.christitus.com/)
 
 ### [YouTube Tutorial](https://www.youtube.com/watch?v=6UQZ5oQg8XA)
 
 ### [ChrisTitus.com Article](https://christitus.com/windows-tool/)
+
+## 🛠️ Build & Develop
+
+> [!NOTE]
+> Winutil is a relatively large script, so it's split into multiple files which're combined into a single `.ps1` file using a custom compiler. This makes maintaining the project a lot easier.
+
+Get a copy of the source code, this can be done using GitHub UI (`Code -> Download ZIP`), or by cloning (downloading) the repo using git.
+
+If git is installed, run the following commands under a PowerShell window to clone and move into project's directory:
+```ps1
+git clone --depth 1 "https://github.com/ChrisTitusTech/winutil.git"
+cd winutil
+```
+
+To build the project, run the Compile Script under a PowerShell window (admin permissions IS NOT required):
+```ps1
+.\Compile.ps1
+```
+
+You'll see a new file named `winutil.ps1`, which's created by `Compile.ps1` script, now you can run it as admin and a new window will popup, enjoy your own compiled version of WinUtil :)
+
+> [!TIP]
+> For more info on using WinUtil and how to develop for it, please consider reading [the Contribution Guidelines](https://winutil.christitus.com/contributing/), if you don't know where to start, or have questions, you can ask over on our [Discord Community Server](https://discord.gg/RUbZUZyByQ) and active project members will answer when they can.
 
 ## 💖 Support
 - To morally and mentally support the project, make sure to leave a ⭐️!
@@ -52,7 +79,7 @@ If you have Issues, refer to [Known Issues](https://christitustech.github.io/win
 
 These are the sponsors that help keep this project alive with monthly contributions.
 
-<!-- sponsors --><a href="https://github.com/ysaito8015"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;3502978?u&#x3D;ca98bf67f04d67080df0feeaa6f007fad51d273f&amp;v&#x3D;4" width="60px" alt="Yusuke Saito" /></a><a href="https://github.com/TriHydera"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;39857764?u&#x3D;5dbda638f45530582eee1703b4473f2a5e229e28&amp;v&#x3D;4" width="60px" alt="TriHydera" /></a><a href="https://github.com/jozozovko"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;3272468?u&#x3D;4391ed4655e4fd8b56e23b4169e44e2ac9b6cd97&amp;v&#x3D;4" width="60px" alt="" /></a><a href="https://github.com/DelDongo"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;127976398?v&#x3D;4" width="60px" alt="" /></a><a href="https://github.com/markamos"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;9561861?u&#x3D;3cca179dcff0413538591e57a3abea116d65ce56&amp;v&#x3D;4" width="60px" alt="Mark Amos" /></a><a href="https://github.com/dwelfusius"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;54533224?u&#x3D;a49ea000a8f52adb31382ea69a1a7501b27fefdd&amp;v&#x3D;4" width="60px" alt="" /></a><a href="https://github.com/mews-se"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;58894405?v&#x3D;4" width="60px" alt="" /></a><a href="https://github.com/jdiegmueller"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;18660571?u&#x3D;601d0a23040a271c86b5d40339f899a6dbf27086&amp;v&#x3D;4" width="60px" alt="Jason A. Diegmueller" /></a><a href="https://github.com/AlanTristar"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;105566568?v&#x3D;4" width="60px" alt="" /></a><a href="https://github.com/zepled112"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;65176625?v&#x3D;4" width="60px" alt="wyatt" /></a><a href="https://github.com/altugtekiner"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;105917451?u&#x3D;ee73ff639c7bd9feb4708ab4ba7b14eff80196f7&amp;v&#x3D;4" width="60px" alt="" /></a><a href="https://github.com/robertsandrock"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;12015331?v&#x3D;4" width="60px" alt="RMS" /></a><a href="https://github.com/mmomega"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;71956566?v&#x3D;4" width="60px" alt="" /></a><a href="https://github.com/KenichiQaz"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;31177857?u&#x3D;efdbae734a4c60a7bb95df4659d0535e60a6fd57&amp;v&#x3D;4" width="60px" alt="Stefan" /></a><a href="https://github.com/thaddl"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;70013104?u&#x3D;116d35b3119744c568c39669475439427a564e49&amp;v&#x3D;4" width="60px" alt="thaddl" /></a><a href="https://github.com/paulsheets"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;45240946?u&#x3D;d4db66f8e8d7a2606fe7a5521daf48ca9f097105&amp;v&#x3D;4" width="60px" alt="Paul" /></a><a href="https://github.com/djones369"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;4107092?v&#x3D;4" width="60px" alt="Dave Jones" /></a><a href="https://github.com/anthonymendez"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;19240897?u&#x3D;f82b4be098cac65c8421421b70ebd2d1da85c67e&amp;v&#x3D;4" width="60px" alt="Anthony Mendez" /></a><a href="https://github.com/xBandaku"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;142067112?u&#x3D;0c9a1edee45ac2a0a42827d418a12b1791d52350&amp;v&#x3D;4" width="60px" alt="xPandaku" /></a><a href="https://github.com/claudemods"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;73653396?u&#x3D;d64c656fb8db24ef56bb000197532df9b618d06c&amp;v&#x3D;4" width="60px" alt="Claudemods" /></a><a href="https://github.com/hkolatan"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;85988507?u&#x3D;35029c900a7a6b10fc244a4f9f7df8252778360c&amp;v&#x3D;4" width="60px" alt="Halil Kolatan" /></a><a href="https://github.com/FatBastard0"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;173957728?v&#x3D;4" width="60px" alt="" /></a><a href="https://github.com/tcookj66"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;61920813?v&#x3D;4" width="60px" alt="Timothy Cook" /></a><a href="https://github.com/june349"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;176018493?u&#x3D;d98b1d19982ea858d06edb4d49df339c6adab901&amp;v&#x3D;4" width="60px" alt="" /></a><a href="https://github.com/issacs-tech"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;180139285?u&#x3D;b57d597a599c549b7527874b7a65304de119657e&amp;v&#x3D;4" width="60px" alt="" /></a><a href="https://github.com/DursleyGuy"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;140165544?v&#x3D;4" width="60px" alt="DursleyGuy" /></a><!-- sponsors -->
+<!-- sponsors --><a href="https://github.com/TriHydera"><img src="https:&#x2F;&#x2F;github.com&#x2F;TriHydera.png" width="60px" alt="User avatar: TriHydera" /></a><a href="https://github.com/DelDongo"><img src="https:&#x2F;&#x2F;github.com&#x2F;DelDongo.png" width="60px" alt="User avatar: " /></a><a href="https://github.com/markamos"><img src="https:&#x2F;&#x2F;github.com&#x2F;markamos.png" width="60px" alt="User avatar: Mark Amos" /></a><a href="https://github.com/dwelfusius"><img src="https:&#x2F;&#x2F;github.com&#x2F;dwelfusius.png" width="60px" alt="User avatar: " /></a><a href="https://github.com/mews-se"><img src="https:&#x2F;&#x2F;github.com&#x2F;mews-se.png" width="60px" alt="User avatar: Martin Stockzell" /></a><a href="https://github.com/jdiegmueller"><img src="https:&#x2F;&#x2F;github.com&#x2F;jdiegmueller.png" width="60px" alt="User avatar: Jason A. Diegmueller" /></a><a href="https://github.com/robertsandrock"><img src="https:&#x2F;&#x2F;github.com&#x2F;robertsandrock.png" width="60px" alt="User avatar: RMS" /></a><a href="https://github.com/KenichiQaz"><img src="https:&#x2F;&#x2F;github.com&#x2F;KenichiQaz.png" width="60px" alt="User avatar: Stefan" /></a><a href="https://github.com/paulsheets"><img src="https:&#x2F;&#x2F;github.com&#x2F;paulsheets.png" width="60px" alt="User avatar: Paul" /></a><a href="https://github.com/djones369"><img src="https:&#x2F;&#x2F;github.com&#x2F;djones369.png" width="60px" alt="User avatar: Dave J. - WhamGeek" /></a><a href="https://github.com/anthonymendez"><img src="https:&#x2F;&#x2F;github.com&#x2F;anthonymendez.png" width="60px" alt="User avatar: Anthony Mendez" /></a><a href="https://github.com/FatBastard0"><img src="https:&#x2F;&#x2F;github.com&#x2F;FatBastard0.png" width="60px" alt="User avatar: " /></a><a href="https://github.com/DursleyGuy"><img src="https:&#x2F;&#x2F;github.com&#x2F;DursleyGuy.png" width="60px" alt="User avatar: DursleyGuy" /></a><a href="https://github.com/realmuddy"><img src="https:&#x2F;&#x2F;github.com&#x2F;realmuddy.png" width="60px" alt="User avatar: Phillip Waters" /></a><a href="https://github.com/quaszi"><img src="https:&#x2F;&#x2F;github.com&#x2F;quaszi.png" width="60px" alt="User avatar: " /></a><a href="https://github.com/DwayneTheRockLobster1"><img src="https:&#x2F;&#x2F;github.com&#x2F;DwayneTheRockLobster1.png" width="60px" alt="User avatar: " /></a><a href="https://github.com/KieraKujisawa"><img src="https:&#x2F;&#x2F;github.com&#x2F;KieraKujisawa.png" width="60px" alt="User avatar: Kiera Meredith" /></a><a href="https://github.com/felicabrera"><img src="https:&#x2F;&#x2F;github.com&#x2F;felicabrera.png" width="60px" alt="User avatar: Felipe Cabrera" /></a><a href="https://github.com/singhchandan27"><img src="https:&#x2F;&#x2F;github.com&#x2F;singhchandan27.png" width="60px" alt="User avatar: " /></a><a href="https://github.com/danhively"><img src="https:&#x2F;&#x2F;github.com&#x2F;danhively.png" width="60px" alt="User avatar: Dan Hively" /></a><a href="https://github.com/Yamil-Serrano"><img src="https:&#x2F;&#x2F;github.com&#x2F;Yamil-Serrano.png" width="60px" alt="User avatar: Neowizen" /></a><!-- sponsors -->
 
 ## 🏅 Thanks to all Contributors
 Thanks a lot for spending your time helping Winutil grow. Thanks a lot! Keep rocking 🍻.

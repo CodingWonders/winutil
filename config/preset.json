@@ -2,8 +2,8 @@
   "Standard": [
     "WPFTweaksAH",
     "WPFTweaksConsumerFeatures",
+    "WPFTweaksDisableExplorerAutoDiscovery",
     "WPFTweaksDVR",
-    "WPFTweaksHiber",
     "WPFTweaksHome",
     "WPFTweaksLoc",
     "WPFTweaksServices",
@@ -14,11 +14,11 @@
     "WPFTweaksDeleteTempFiles",
     "WPFTweaksEndTaskOnTaskbar",
     "WPFTweaksRestorePoint",
-    "WPFTweaksIPv46",
     "WPFTweaksPowershell7Tele"
   ],
   "Minimal": [
     "WPFTweaksConsumerFeatures",
+    "WPFTweaksDisableExplorerAutoDiscovery",
     "WPFTweaksHome",
     "WPFTweaksServices",
     "WPFTweaksTele"

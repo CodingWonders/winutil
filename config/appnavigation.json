@@ -1,0 +1,62 @@
+{
+    "WPFInstall": {
+        "Content": "Install/Upgrade Applications",
+        "Category": "____Actions",
+        "Type": "Button",
+        "Order": "1",
+        "Description": "Install or upgrade the selected applications"
+    },
+    "WPFUninstall": {
+        "Content": "Uninstall Applications",
+        "Category": "____Actions",
+        "Type": "Button",
+        "Order": "2",
+        "Description": "Uninstall the selected applications"
+    },
+    "WPFInstallUpgrade": {
+        "Content": "Upgrade all Applications",
+        "Category": "____Actions",
+        "Type": "Button",
+        "Order": "3",
+        "Description": "Upgrade all applications to the latest version"
+    },
+    "WingetRadioButton": {
+        "Content": "Winget",
+        "Category": "__Package Manager",
+        "Type": "RadioButton",
+        "GroupName": "PackageManagerGroup",
+        "Checked": true,
+        "Order": "1",
+        "Description": "Use Winget for package management"
+    },
+    "ChocoRadioButton": {
+        "Content": "Chocolatey",
+        "Category": "__Package Manager",
+        "Type": "RadioButton",
+        "GroupName": "PackageManagerGroup",
+        "Checked": false,
+        "Order": "2",
+        "Description": "Use Chocolatey for package management"
+    },
+    "WPFClearInstallSelection": {
+        "Content": "Clear Selection",
+        "Category": "__Selection",
+        "Type": "Button",
+        "Order": "1",
+        "Description": "Clear the selection of applications"
+    },
+    "WPFGetInstalled": {
+        "Content": "Get Installed",
+        "Category": "__Selection",
+        "Type": "Button",
+        "Order": "2",
+        "Description": "Show installed applications"
+    },
+    "WPFselectedAppsButton": {
+        "Content": "Selected Apps: 0",
+        "Category": "__Selection",
+        "Type": "Button",
+        "Order": "3",
+        "Description": "Show the selected applications"
+    }
+}

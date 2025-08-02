@@ -33,36 +33,44 @@ function Install-WinUtilWinget {
             return
         }
 
-        # Install Winget via GitHub method.
-        # Used part of my own script with some modification: ruxunderscore/windows-initialization
-        Write-Host "Downloading Winget Prerequsites`n"
-        Get-WinUtilWingetPrerequisites
-        Write-Host "Downloading Winget and License File`r"
-        Get-WinUtilWingetLatest
-        Write-Host "Installing Winget w/ Prerequsites`r"
-        Add-AppxProvisionedPackage -Online -PackagePath $ENV:TEMP\Microsoft.DesktopAppInstaller.msixbundle -DependencyPackagePath $ENV:TEMP\Microsoft.VCLibs.x64.Desktop.appx, $ENV:TEMP\Microsoft.UI.Xaml.x64.appx -LicensePath $ENV:TEMP\License1.xml
-        Write-Host "Manually adding Winget Sources, from Winget CDN."
-        Add-AppxPackage -Path https://cdn.winget.microsoft.com/cache/source.msix #Seems some installs of Winget don't add the repo source, this should makes sure that it's installed every time.
-        Write-Host "Winget Installed" -ForegroundColor Green
-        Write-Host "Enabling NuGet and Module..."
-        Install-PackageProvider -Name NuGet -Force
-        Install-Module -Name Microsoft.WinGet.Client -Force
-        # Winget only needs a refresh of the environment variables to be used.
-        Write-Output "Refreshing Environment Variables...`n"
-        $ENV:PATH = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
-    } catch {
-        Write-Host "Failure detected while installing via GitHub method. Continuing with Chocolatey method as fallback." -ForegroundColor Red
-        # In case install fails via GitHub method.
+        Write-Host "Attempting to install/update Winget`r"
         try {
-        # Install Choco if not already present
-        Install-WinUtilChoco
-        Start-Process -Verb runas -FilePath powershell.exe -ArgumentList "choco install winget-cli"
-        Write-Host "Winget Installed" -ForegroundColor Green
-        Write-Output "Refreshing Environment Variables...`n"
-        $ENV:PATH = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+            $wingetCmd = Get-Command winget -ErrorAction Stop
+            Write-Information "Attempting to update WinGet using WinGet..."
+            $result = Start-Process -FilePath "`"$($wingetCmd.Source)`"" -ArgumentList "install -e --accept-source-agreements --accept-package-agreements Microsoft.AppInstaller" -Wait -NoNewWindow -PassThru
+            if ($result.ExitCode -ne 0) {
+                throw "WinGet update failed with exit code: $($result.ExitCode)"
+            }
+            Write-Output "Refreshing Environment Variables...`n"
+            $ENV:PATH = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+            return
         } catch {
-            throw [WingetFailedInstall]::new('Failed to install!')
+            Write-Information "WinGet not found or update failed. Attempting to install from Microsoft Store..."
         }
-    }
+        try {
+            Write-Host "Attempting to repair WinGet using Repair-WinGetPackageManager..." -ForegroundColor Yellow
 
+            # Check if Windows version supports Repair-WinGetPackageManager (24H2 and above)
+            if ([System.Environment]::OSVersion.Version.Build -ge 26100) {
+                Repair-WinGetPackageManager -Force -Latest -Verbose
+                # Verify if repair was successful
+                $wingetCmd = Get-Command winget -ErrorAction Stop
+                Write-Host "WinGet repair successful!" -ForegroundColor Green
+            } else {
+                Write-Host "Repair-WinGetPackageManager is only available on Windows 24H2 and above. Your version doesn't support this method." -ForegroundColor Yellow
+                throw "Windows version not supported for repair method"
+            }
+
+            Write-Output "Refreshing Environment Variables...`n"
+            $ENV:PATH = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+            return
+
+        } catch {
+            Write-Error "All installation methods failed. Unable to install WinGet."
+            throw
+        }
+    } catch {
+        Write-Error "An error occurred during WinGet installation: $_"
+        throw
+    }
 }

@@ -85,7 +85,7 @@
         "content": "AnyDesk",
         "description": "AnyDesk is a remote desktop software that enables users to access and control computers remotely. It is known for its fast connection and low latency.",
         "link": "https://anydesk.com/",
-        "winget": "AnyDeskSoftwareGmbH.AnyDesk"
+        "winget": "AnyDesk.AnyDesk"
     },
     "audacity": {
         "category": "Multimedia Tools",
@@ -247,14 +247,6 @@
         "link": "https://github.com/Hibbiki/chromium-win64",
         "winget": "Hibbiki.Chromium"
     },
-    "arc": {
-        "category": "Browsers",
-        "choco": "na",
-        "content": "Arc",
-        "description": "Arc is a Chromium based browser, known for it's clean and modern design.",
-        "link": "https://arc.net/",
-        "winget": "TheBrowserCompany.Arc"
-    },
     "clementine": {
         "category": "Multimedia Tools",
         "choco": "clementine",
@@ -349,7 +341,7 @@
         "content": "Display Driver Uninstaller",
         "description": "Display Driver Uninstaller (DDU) is a tool for completely uninstalling graphics drivers from NVIDIA, AMD, and Intel. It is useful for troubleshooting graphics driver-related issues.",
         "link": "https://www.wagnardsoft.com/display-driver-uninstaller-DDU-",
-        "winget": "ddu"
+        "winget": "Wagnardsoft.DisplayDriverUninstaller"
     },
     "deluge": {
         "category": "Utilities",
@@ -439,13 +431,21 @@
         "link": "https://dotnet.microsoft.com/download/dotnet/8.0",
         "winget": "Microsoft.DotNet.DesktopRuntime.8"
     },
+    "dotnet9": {
+        "category": "Microsoft Tools",
+        "choco": "dotnet-9.0-runtime",
+        "content": ".NET Desktop Runtime 9",
+        "description": ".NET Desktop Runtime 9 is a runtime environment required for running applications developed with .NET 9.",
+        "link": "https://dotnet.microsoft.com/download/dotnet/9.0",
+        "winget": "Microsoft.DotNet.DesktopRuntime.9"
+    },
     "dmt": {
         "winget": "GNE.DualMonitorTools",
         "choco": "dual-monitor-tools",
         "category": "Utilities",
         "content": "Dual Monitor Tools",
         "link": "https://dualmonitortool.sourceforge.net/",
-        "description": "Dual Monitor Tools (DMT) is a FOSS app that customize handling multiple monitors and even lock the mouse on specific monitor. Useful for full screen games and apps that does not handle well a second monitor or helps the workflow."
+        "description": "Dual Monitor Tools (DMT) is a FOSS app that allows you to customize the handling of multiple monitors. Useful for fullscreen games and apps that handle a second monitor poorly and can improve your workflow."
     },
     "duplicati": {
         "category": "Utilities",
@@ -519,14 +519,6 @@
         "link": "https://espanso.org/",
         "winget": "Espanso.Espanso"
     },
-    "etcher": {
-        "category": "Utilities",
-        "choco": "etcher",
-        "content": "Etcher USB Creator",
-        "description": "Etcher is a powerful tool for creating bootable USB drives with ease.",
-        "link": "https://www.balena.io/etcher/",
-        "winget": "Balena.Etcher"
-    },
     "falkon": {
         "category": "Browsers",
         "choco": "falkon",
@@ -555,7 +547,7 @@
         "category": "Multimedia Tools",
         "choco": "ffmpeg-full",
         "content": "FFmpeg (full)",
-        "description": "FFmpeg is a powerful multimedia processing tool that enables users to convert, edit, and stream audio and video files with a vast range of codecs and formats.",
+        "description": "FFmpeg is a powerful multimedia processing tool that enables users to convert, edit, and stream audio and video files with a vast range of codecs and formats. | Note: FFmpeg can not be uninstalled using winget.",
         "link": "https://ffmpeg.org/",
         "winget": "Gyan.FFmpeg"
     },
@@ -675,9 +667,9 @@
         "category": "Multimedia Tools",
         "choco": "fxsound",
         "content": "FxSound",
-        "description": "FxSound is a cutting-edge audio enhancement software that elevates your listening experience across all media.",
+        "description": "FxSound is free open-source software to boost sound quality, volume, and bass. Including an equalizer, effects, and presets for customized audio.",
         "link": "https://www.fxsound.com/",
-        "winget": "FxSoundLLC.FxSound"
+        "winget": "FxSound.FxSound"
     },
     "fzf": {
         "category": "Utilities",
@@ -701,7 +693,7 @@
         "content": "GIMP (Image Editor)",
         "description": "GIMP is a versatile open-source raster graphics editor used for tasks such as photo retouching, image editing, and image composition.",
         "link": "https://www.gimp.org/",
-        "winget": "GIMP.GIMP"
+        "winget": "GIMP.GIMP.3"
     },
     "git": {
         "category": "Development",
@@ -908,7 +900,7 @@
         "choco": "imgburn",
         "content": "ImgBurn",
         "description": "ImgBurn is a lightweight CD, DVD, HD-DVD, and Blu-ray burning application with advanced features for creating and burning disc images.",
-        "link": "http://www.imgburn.com/",
+        "link": "https://www.imgburn.com/",
         "winget": "LIGHTNINGUK.ImgBurn"
     },
     "inkscape": {
@@ -980,7 +972,7 @@
         "choco": "jdownloader",
         "content": "JDownloader",
         "description": "JDownloader is a feature-rich download manager with support for various file hosting services.",
-        "link": "http://jdownloader.org/",
+        "link": "https://jdownloader.org/",
         "winget": "AppWork.JDownloader"
     },
     "jellyfinmediaplayer": {
@@ -1372,7 +1364,7 @@
         "choco": "na",
         "content": "nGlide (3dfx compatibility)",
         "description": "nGlide is a 3Dfx Voodoo Glide wrapper. It allows you to play games that use Glide API on modern graphics cards without the need for a 3Dfx Voodoo graphics card.",
-        "link": "http://www.zeus-software.com/downloads/nglide",
+        "link": "https://www.zeus-software.com/downloads/nglide",
         "winget": "ZeusSoftware.nGlide"
     },
     "nmap": {
@@ -1502,14 +1494,6 @@
         "description": "OpenHashTab is a shell extension for conveniently calculating and checking file hashes from file properties.",
         "link": "https://github.com/namazso/OpenHashTab/",
         "winget": "namazso.OpenHashTab"
-    },
-    "openoffice": {
-        "category": "Document",
-        "choco": "openoffice",
-        "content": "Apache OpenOffice",
-        "description": "Apache OpenOffice is an open-source office software suite for word processing, spreadsheets, presentations, and more.",
-        "link": "https://www.openoffice.org/",
-        "winget": "Apache.OpenOffice"
     },
     "openrgb": {
         "category": "Utilities",
@@ -1691,7 +1675,7 @@
         "category": "Games",
         "choco": "prismlauncher",
         "content": "Prism Launcher",
-        "description": "Prism Launcher is a game launcher and manager designed to provide a clean and intuitive interface for organizing and launching your games.",
+        "description": "Prism Launcher is an Open Source Minecraft launcher with the ability to manage multiple instances, accounts and mods.",
         "link": "https://prismlauncher.org/",
         "winget": "PrismLauncher.PrismLauncher"
     },
@@ -1757,7 +1741,7 @@
         "content": "Python3",
         "description": "Python is a versatile programming language used for web development, data analysis, artificial intelligence, and more.",
         "link": "https://www.python.org/",
-        "winget": "Python.Python.3.12"
+        "winget": "Python.Python.3.13"
     },
     "qbittorrent": {
         "category": "Utilities",
@@ -1871,14 +1855,6 @@
         "link": "https://sagethumbs.en.lo4d.com/windows",
         "winget": "CherubicSoftware.SageThumbs"
     },
-    "samsungmagician": {
-        "category": "Utilities",
-        "choco": "samsung-magician",
-        "content": "Samsung Magician",
-        "description": "Samsung Magician is a utility for managing and optimizing Samsung SSDs.",
-        "link": "https://semiconductor.samsung.com/consumer-storage/magician/",
-        "winget": "Samsung.SamsungMagician"
-    },
     "sandboxie": {
         "category": "Utilities",
         "choco": "sandboxie",
@@ -1892,7 +1868,7 @@
         "choco": "sdio",
         "content": "Snappy Driver Installer Origin",
         "description": "Snappy Driver Installer Origin is a free and open-source driver updater with a vast driver database for Windows.",
-        "link": "https://sourceforge.net/projects/snappy-driver-installer-origin",
+        "link": "https://www.glenn.delahoy.com/snappy-driver-installer-origin/",
         "winget": "GlennDelahoy.SnappyDriverInstallerOrigin"
     },
     "session": {
@@ -1959,14 +1935,6 @@
         "link": "https://github.com/henrypp/simplewall",
         "winget": "Henry++.simplewall"
     },
-    "skype": {
-        "category": "Communications",
-        "choco": "skype",
-        "content": "Skype",
-        "description": "Skype is a widely used communication platform offering video calls, voice calls, and instant messaging services.",
-        "link": "https://www.skype.com/",
-        "winget": "Microsoft.Skype"
-    },
     "slack": {
         "category": "Communications",
         "choco": "slack",
@@ -1990,14 +1958,6 @@
         "description": "A tool application that lets you understand how folders and files are structured on your disks",
         "link": "http://www.uderzo.it/main_products/space_sniffer/",
         "winget": "UderzoSoftware.SpaceSniffer"
-    },
-    "spotube": {
-        "category": "Multimedia Tools",
-        "choco": "spotube",
-        "content": "Spotube",
-        "description": "Open source Spotify client that doesn't require Premium nor uses Electron! Available for both desktop & mobile! ",
-        "link": "https://github.com/KRTirtho/spotube",
-        "winget": "KRTirtho.Spotube"
     },
     "starship": {
         "category": "Development",
@@ -2196,7 +2156,7 @@
         "choco": "na",
         "content": "Thorium Browser AVX2",
         "description": "Browser built for speed over vanilla chromium. It is built with AVX2 optimizations and is the fastest browser on the market.",
-        "link": "http://thorium.rocks/",
+        "link": "https://thorium.rocks/",
         "winget": "Alex313031.Thorium.AVX2"
     },
     "thunderbird": {
@@ -2250,8 +2210,8 @@
     "ttaskbar": {
         "category": "Utilities",
         "choco": "translucenttb",
-        "content": "Translucent Taskbar",
-        "description": "Translucent Taskbar is a tool that allows you to customize the transparency of the Windows taskbar.",
+        "content": "TranslucentTB",
+        "description": "TranslucentTB is a tool that allows you to customize the transparency of the Windows taskbar.",
         "link": "https://github.com/TranslucentTB/TranslucentTB",
         "winget": "9PF4KZ2VN4W9"
     },
@@ -2333,7 +2293,7 @@
         "content": "Viber",
         "description": "Viber is a free messaging and calling app with features like group chats, video calls, and more.",
         "link": "https://www.viber.com/",
-        "winget": "Viber.Viber"
+        "winget": "Rakuten.Viber"
     },
     "videomass": {
         "category": "Multimedia Tools",
@@ -2453,7 +2413,7 @@
         "content": "UniGetUI",
         "description": "UniGetUI is a GUI for Winget, Chocolatey, and other Windows CLI package managers.",
         "link": "https://www.marticliment.com/wingetui/",
-        "winget": "SomePythonThings.WingetUIStore"
+        "winget": "MartiCliment.UniGetUI"
     },
     "winmerge": {
         "category": "Document",
@@ -2855,14 +2815,6 @@
         "link": "https://www.kicad.org/",
         "winget": "KiCad.KiCad"
     },
-    "FormatFactory": {
-        "category": "Utilities",
-        "choco": "formatfactory",
-        "content": "Format Factory",
-        "description":"FormatFactory is an ad-supported freeware multimedia converter that can convert video, audio, and picture files. It is also capable of ripping DVDs and CDs to other file formats, as well as creating .iso images. It can also join multiple video files together into one.",
-        "link": "http://www.pcfreetime.com/formatfactory/",
-        "winget": "na"
-    },
     "dropox": {
         "category": "Utilities",
         "choco": "na",
@@ -2934,5 +2886,13 @@
         "description": "Fork - a fast and friendly git client.",
         "link": "https://git-fork.com/",
         "winget": "Fork.Fork"
+    },
+    "ZenBrowser": {
+        "category": "Browsers",
+        "choco": "na",
+        "content": "Zen Browser",
+        "description": "The modern, privacy-focused, performance-driven browser built on Firefox",
+        "link": "https://zen-browser.app/",
+        "winget": "Zen-Team.Zen-Browser"
     }
 }
