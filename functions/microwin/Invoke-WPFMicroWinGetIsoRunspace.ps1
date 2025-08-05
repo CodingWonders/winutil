@@ -35,31 +35,21 @@ function Invoke-WPFMicroWinGetIsoRunspace {
             $totalSteps = 10
             $currentStep = 0
 
-            Write-Host "DEBUG: About to set initial progress..."
 
             # Provide immediate feedback to user with progress
             try {
-                Write-Host "DEBUG: Attempting dispatcher invoke..."
                 $sync.form.Dispatcher.Invoke([action]{
-                    Write-Host "DEBUG: Inside dispatcher invoke - calling Set-WinUtilTaskbaritem..."
                     try {
                         Set-WinUtilTaskbaritem -state "Normal" -value 0.1 -overlay "logo"
-                        Write-Host "DEBUG: Set-WinUtilTaskbaritem completed"
                     } catch {
-                        Write-Host "DEBUG: Error in Set-WinUtilTaskbaritem: $($_.Exception.Message)"
                     }
 
-                    Write-Host "DEBUG: Skipping Invoke-MicrowinBusyInfo - function appears to be blocking"
                     # Skip the problematic Invoke-MicrowinBusyInfo call for now
                 })
-                Write-Host "DEBUG: Dispatcher invoke completed successfully"
             } catch {
-                Write-Host "DEBUG: Error in dispatcher invoke: $($_.Exception.Message)"
-                Write-Host "DEBUG: Continuing without UI updates..."
             }
             $currentStep = 1
 
-            Write-Host "DEBUG: Initial progress set, displaying ASCII art..."
 
             Write-Host "         _                     __    __  _         "
             Write-Host "  /\/\  (_)  ___  _ __   ___  / / /\ \ \(_) _ __   "
@@ -67,18 +57,14 @@ function Invoke-WPFMicroWinGetIsoRunspace {
             Write-Host "/ /\/\ \| || (__ | |   | (_) | \  /\  / | || | | | "
             Write-Host "\/    \/|_| \___||_|    \___/   \/  \/  |_||_| |_| "
 
-            Write-Host "DEBUG: ASCII art displayed, checking file path..."
 
             $filePath = ""
 
             if ($GetIsoSettings.isManual) {
-                Write-Host "DEBUG: Processing manual ISO selection..."
                 # Use the pre-selected file path from the main thread
                 $filePath = $GetIsoSettings.filePath
-                Write-Host "DEBUG: File path from settings: '$filePath'"
 
                 if ([string]::IsNullOrEmpty($filePath)) {
-                    Write-Host "DEBUG: No ISO is chosen - exiting"
                     Write-Host "No ISO is chosen"
                     $sync.form.Dispatcher.Invoke([action]{
                         Set-WinUtilTaskbaritem -state "Error" -value 1 -overlay "warning"
@@ -88,14 +74,12 @@ function Invoke-WPFMicroWinGetIsoRunspace {
                     return
                 }
 
-                Write-Host "DEBUG: ISO file is valid, updating progress..."
                 # Update progress
                 $currentStep = 2
                 $sync.form.Dispatcher.Invoke([action]{
                     Set-WinUtilTaskbaritem -state "Normal" -value ($currentStep / $totalSteps) -overlay "logo"
                     # Skip Invoke-MicrowinBusyInfo call that was causing issues
                 })
-                Write-Host "DEBUG: Progress updated to step 2"
 
             } elseif ($GetIsoSettings.isDownloader) {
                 # Use the pre-selected folder path from the main thread
@@ -170,10 +154,8 @@ function Invoke-WPFMicroWinGetIsoRunspace {
                 }
             }
 
-            Write-Host "DEBUG: Checking if file exists..."
             Write-Host "File path $($filePath)"
             if (-not (Test-Path -Path "$filePath" -PathType Leaf)) {
-                Write-Host "DEBUG: File doesn't exist - showing error"
                 $msg = "File you've chosen doesn't exist"
                 $sync.form.Dispatcher.Invoke([action]{
                     # Invoke-MicrowinBusyInfo -action "warning" -message $msg
@@ -182,7 +164,6 @@ function Invoke-WPFMicroWinGetIsoRunspace {
                 $sync.ProcessRunning = $false
                 return
             }
-            Write-Host "DEBUG: File exists, proceeding to system requirements check..."
 
             $sync.form.Dispatcher.Invoke([action]{
                 Set-WinUtilTaskbaritem -state "Normal" -value (3 / $totalSteps) -overlay "logo"
@@ -249,9 +230,7 @@ function Invoke-WPFMicroWinGetIsoRunspace {
 
             # Detect the file size of the ISO and compare it with the free space of the system drive
             $isoSize = (Get-Item -Path "$filePath").Length
-            Write-Debug "Size of ISO file: $($isoSize) bytes"
             $driveSpace = (Get-Volume -DriveLetter ([IO.Path]::GetPathRoot([Environment]::GetFolderPath([Environment+SpecialFolder]::UserProfile)).Replace(":\", "").Trim())).SizeRemaining
-            Write-Debug "Free space on installation drive: $($driveSpace) bytes"
             if ($driveSpace -lt ($isoSize * 2)) {
                 Write-Warning "You may not have enough space for this operation. Proceed at your own risk."
             } elseif ($driveSpace -lt $isoSize) {
@@ -377,11 +356,6 @@ function Invoke-WPFMicroWinGetIsoRunspace {
                 Write-Host "Copying Windows image. This will take awhile, please don't use UI or cancel this step!"
 
                 try {
-                    Write-Host "DEBUG: Starting file copy operation..."
-                    Write-Host "DEBUG: Source: '$($driveLetter):'"
-                    Write-Host "DEBUG: Destination: '$mountDir'"
-                    Write-Host "DEBUG: Checking if source exists: $(Test-Path "$($driveLetter):")"
-                    Write-Host "DEBUG: Checking if destination exists: $(Test-Path "$mountDir")"
 
                     $totalTime = Measure-Command {
                         # Use native Copy-Item instead of Copy-Files function
@@ -411,14 +385,9 @@ function Invoke-WPFMicroWinGetIsoRunspace {
                         })
                     }
                     Write-Host "Copy complete! Total Time: $($totalTime.Minutes) minutes, $($totalTime.Seconds) seconds"
-                    Write-Host "DEBUG: File copy operation completed successfully"
                 } catch {
-                    Write-Host "DEBUG: ERROR during file copy: $($_.Exception.Message)"
-                    Write-Host "DEBUG: Full error details: $_"
-                    Write-Host "DEBUG: Error type: $($_.Exception.GetType().FullName)"
 
                     # Fallback to PowerShell Copy-Item if robocopy fails
-                    Write-Host "DEBUG: Falling back to PowerShell Copy-Item..."
                     try {
                         $totalTime = Measure-Command {
                             Copy-Item -Path "$($driveLetter):*" -Destination "$mountDir" -Recurse -Force
@@ -428,9 +397,7 @@ function Invoke-WPFMicroWinGetIsoRunspace {
                             })
                         }
                         Write-Host "Fallback copy complete! Total Time: $($totalTime.Minutes) minutes, $($totalTime.Seconds) seconds"
-                        Write-Host "DEBUG: Fallback copy operation completed successfully"
                     } catch {
-                        Write-Host "DEBUG: ERROR during fallback copy: $($_.Exception.Message)"
                         throw $_
                     }
                 }                $sync.form.Dispatcher.Invoke([action]{
@@ -440,12 +407,8 @@ function Invoke-WPFMicroWinGetIsoRunspace {
                 $currentStep = 8
                 $wimFile = "$mountDir\sources\install.wim"
                 Write-Host "Getting image information $wimFile"
-                Write-Host "DEBUG: Checking for WIM file at: '$wimFile'"
-                Write-Host "DEBUG: WIM file exists: $(Test-Path "$wimFile" -PathType Leaf)"
 
                 $esdFile = $wimFile.Replace(".wim", ".esd").Trim()
-                Write-Host "DEBUG: Checking for ESD file at: '$esdFile'"
-                Write-Host "DEBUG: ESD file exists: $(Test-Path "$esdFile" -PathType Leaf)"
 
                 if ((-not (Test-Path -Path "$wimFile" -PathType Leaf)) -and (-not (Test-Path -Path "$esdFile" -PathType Leaf))) {
                     $msg = "Neither install.wim nor install.esd exist in the image, this could happen if you use unofficial Windows images. Please don't use shady images from the internet."
@@ -461,29 +424,23 @@ function Invoke-WPFMicroWinGetIsoRunspace {
                     $wimFile = $esdFile
                 }
 
-                Write-Host "DEBUG: Final WIM file path: '$wimFile'"
-                Write-Host "DEBUG: Final WIM file exists: $(Test-Path "$wimFile" -PathType Leaf)"
 
                 # Populate the Windows flavors list - must be done on UI thread
                 $sync.form.Dispatcher.Invoke([action]{
                     $sync.MicrowinWindowsFlavors.Items.Clear()
                 })
 
-                Write-Host "DEBUG: About to enumerate Windows images..."
                 try {
                     $images = Get-WindowsImage -ImagePath $wimFile
-                    Write-Host "DEBUG: Found $($images.Count) Windows images"
 
                     $images | ForEach-Object {
                         $imageIdx = $_.ImageIndex
                         $imageName = $_.ImageName
-                        Write-Host "DEBUG: Processing image $imageIdx : $imageName"
                         $sync.form.Dispatcher.Invoke([action]{
                             $sync.MicrowinWindowsFlavors.Items.Add("$imageIdx : $imageName")
                         })
                     }
                 } catch {
-                    Write-Host "DEBUG: ERROR enumerating Windows images: $($_.Exception.Message)"
                     throw $_
                 }
 
@@ -495,7 +452,7 @@ function Invoke-WPFMicroWinGetIsoRunspace {
                 })
                 $currentStep = 9
 
-                Write-Host "Finding suitable edition. This can take some time. Do note that this is an automatic process that might not select the edition you want."
+                Write-Host "Finding suitable Pro edition. This can take some time. Do note that this is an automatic process that might not select the edition you want."
 
                 Get-WindowsImage -ImagePath $wimFile | ForEach-Object {
                     if ((Get-WindowsImage -ImagePath $wimFile -Index $_.ImageIndex).EditionId -eq "Professional") {
@@ -520,31 +477,21 @@ function Invoke-WPFMicroWinGetIsoRunspace {
                 })
 
             } catch {
-                Write-Host "DEBUG: CATCH BLOCK TRIGGERED - Processing error..."
-                Write-Host "DEBUG: Error message: $($_.Exception.Message)"
-                Write-Host "DEBUG: Error type: $($_.Exception.GetType().FullName)"
-                Write-Host "DEBUG: Stack trace: $($_.ScriptStackTrace)"
-                Write-Host "DEBUG: Full error object: $_"
 
                 Write-Host "Dismounting bad image..."
                 try {
                     Get-Volume $driveLetter | Get-DiskImage | Dismount-DiskImage
-                    Write-Host "DEBUG: Image dismounted successfully"
                 } catch {
-                    Write-Host "DEBUG: Error dismounting image: $($_.Exception.Message)"
                 }
 
                 try {
                     if (Test-Path "$scratchDir") {
                         Remove-Item -Recurse -Force "$($scratchDir)"
-                        Write-Host "DEBUG: Scratch directory '$scratchDir' removed"
                     }
                     if (Test-Path "$mountDir") {
                         Remove-Item -Recurse -Force "$($mountDir)"
-                        Write-Host "DEBUG: Mount directory '$mountDir' removed"
                     }
                 } catch {
-                    Write-Host "DEBUG: Error cleaning up directories: $($_.Exception.Message)"
                 }
 
                 $sync.form.Dispatcher.Invoke([action]{
