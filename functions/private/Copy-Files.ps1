@@ -37,11 +37,38 @@ function Copy-Files {
                 New-Item ($destination+$restpath) -Force:$force -Type Directory -ErrorAction SilentlyContinue
             } else {
                 Write-Debug "Copy from $($file.FullName) to $($destination+$restpath)"
-                Copy-Item $file.FullName ($destination+$restpath) -ErrorAction SilentlyContinue -Force:$force
-                Set-ItemProperty -Path ($destination+$restpath) -Name IsReadOnly -Value $false
+                try {
+                    Copy-Item $file.FullName ($destination+$restpath) -ErrorAction Stop -Force:$force
+
+                    # Use more robust method to remove ReadOnly attribute
+                    $copiedFile = Get-Item -Path ($destination+$restpath) -Force -ErrorAction SilentlyContinue
+                    if ($copiedFile -and ($copiedFile.Attributes -band [System.IO.FileAttributes]::ReadOnly)) {
+                        $copiedFile.Attributes = $copiedFile.Attributes -band (-bnot [System.IO.FileAttributes]::ReadOnly)
+                    }
+
+                    # Force garbage collection to release file handles
+                    $copiedFile = $null
+                } catch {
+                    Write-Debug "Failed to copy $($file.FullName): $($_.Exception.Message)"
+                    # Try alternative method if standard copy fails
+                    try {
+                        [System.IO.File]::Copy($file.FullName, ($destination+$restpath), $force)
+                        # Remove ReadOnly using .NET method
+                        [System.IO.File]::SetAttributes(($destination+$restpath), [System.IO.File]::GetAttributes(($destination+$restpath)) -band (-bnot [System.IO.FileAttributes]::ReadOnly))
+                    } catch {
+                        Write-Debug "Alternative copy method also failed: $($_.Exception.Message)"
+                    }
+                }
             }
         }
         Write-Progress -Activity "Copy disc image files" -Status "Ready" -Completed
+
+        # Force cleanup to release any remaining file handles
+        [System.GC]::Collect()
+        [System.GC]::WaitForPendingFinalizers()
+        [System.GC]::Collect()
+
+        Write-Host "File copy completed. Released file handles for unmount."
     } catch {
         Write-Host "Unable to Copy all the files due to an unhandled exception" -ForegroundColor Yellow
         Write-Host "Error information: $($_.Exception.Message)`n" -ForegroundColor Yellow
