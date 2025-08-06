@@ -27,7 +27,7 @@ function Get-ProcessesUsingPath {
         $allProcesses = Get-Process -ErrorAction SilentlyContinue
         foreach ($process in $allProcesses) {
             try {
-                if ($process.ProcessName -match "^(System|Idle)$") {
+                if ($process.ProcessName -match "^(System|Registry|Idle)$") {
                     continue
                 }
 
