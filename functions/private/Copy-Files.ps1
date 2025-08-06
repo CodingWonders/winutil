@@ -53,7 +53,7 @@ function Copy-Files {
                     try {
                         [System.IO.File]::Copy($file.FullName, $targetPath, $force)
                         # Remove ReadOnly attribute using attrib for consistency
-                        & attrib -R ($destination\$restpath) 2>$null
+                        & attrib -R $targetPath 2>$null
                     } catch {
                         Write-Debug "Alternative copy method also failed: $($_.Exception.Message)"
                     }
