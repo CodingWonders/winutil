@@ -58,14 +58,12 @@ function Microwin-RemoveFeatures() {
             foreach ($feature in $featList) {
                 $status = "Removing feature $($feature.FeatureName)"
                 Write-Progress -Activity "Removing features" -Status $status -PercentComplete ($counter++/$featlist.Count*100)
-                Write-Debug "Removing feature $($feature.FeatureName)"
                 Disable-WindowsOptionalFeature -Path "$scratchDir" -FeatureName $($feature.FeatureName) -Remove  -ErrorAction SilentlyContinue -NoRestart
             }
         } else {
             foreach ($feature in $featList) {
                 $status = "Removing feature $feature"
                 Write-Progress -Activity "Removing features" -Status $status -PercentComplete ($counter++/$featlist.Count*100)
-                Write-Debug "Removing feature $feature"
                 dism /english /image="$scratchDir" /disable-feature /featurename=$feature /remove /quiet /norestart | Out-Null
                 if ($? -eq $false) {
                     Write-Host "Feature $feature could not be disabled."

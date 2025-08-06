@@ -8,10 +8,8 @@ function Microwin-RemoveFileOrDirectory([string]$pathToDelete, [string]$mask = "
     $itemsToDelete = [System.Collections.ArrayList]::new()
 
     if ($mask -eq "") {
-        Write-Debug "Adding $($pathToDelete) to array."
         [void]$itemsToDelete.Add($pathToDelete)
     } else {
-        Write-Debug "Adding $($pathToDelete) to array and mask is $($mask)"
         if ($Directory) {
             $itemsToDelete = Get-ChildItem $pathToDelete -Include $mask -Recurse -Directory
         } else {
