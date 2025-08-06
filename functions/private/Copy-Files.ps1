@@ -30,19 +30,20 @@ function Copy-Files {
         foreach ($file in $files) {
             $status = "Copying file {0} of {1}: {2}" -f $counter, $files.Count, $file.Name
             Write-Progress -Activity "Copy disc image files" -Status $status -PercentComplete ($counter++/$files.count*100)
-            $restpath = $file.FullName -Replace $path, ''
+            $restpath = $file.FullName -Replace [regex]::Escape($path), ''
 
             if ($file.PSIsContainer -eq $true) {
-                Write-Debug "Creating $($destination + $restpath)"
-                New-Item ($destination+$restpath) -Force:$force -Type Directory -ErrorAction SilentlyContinue
+                $targetPath = Join-Path $destination $restpath
+                Write-Debug "Creating $targetPath"
+                New-Item $targetPath -Force:$force -Type Directory -ErrorAction SilentlyContinue
             } else {
-                Write-Debug "Copy from $($file.FullName) to $($destination+$restpath)"
+                $targetPath = Join-Path $destination $restpath
+                Write-Debug "Copy from $($file.FullName) to $targetPath"
                 try {
-                    Copy-Item $file.FullName ($destination+$restpath) -ErrorAction Stop -Force:$force
-
+                    Copy-Item $file.FullName $targetPath -ErrorAction Stop -Force:$force
 
                     # Remove ReadOnly attribute using attrib for consistency
-                    & attrib -R ($destination+$restpath) 2>$null
+                    & attrib -R $targetPath 2>$null
 
                     # Force garbage collection to release file handles
                     $copiedFile = $null
@@ -50,9 +51,9 @@ function Copy-Files {
                     Write-Debug "Failed to copy $($file.FullName): $($_.Exception.Message)"
                     # Try alternative method if standard copy fails
                     try {
-                        [System.IO.File]::Copy($file.FullName, ($destination+$restpath), $force)
+                        [System.IO.File]::Copy($file.FullName, $targetPath, $force)
                         # Remove ReadOnly attribute using attrib for consistency
-                        & attrib -R ($destination+$restpath) 2>$null
+                        & attrib -R ($destination\$restpath) 2>$null
                     } catch {
                         Write-Debug "Alternative copy method also failed: $($_.Exception.Message)"
                     }

@@ -426,7 +426,7 @@ function Invoke-WPFMicroWinGetIsoRunspace {
                         $sync.form.Dispatcher.Invoke([action]{
                             $sync.MicrowinWindowsFlavors.SelectedIndex = $_.ImageIndex - 1
                         })
-                        break  # Exit the loop since we found the Pro edition
+                        break
                     }
                     # Allow UI updates during this loop
                     $sync.form.Dispatcher.Invoke([action]{

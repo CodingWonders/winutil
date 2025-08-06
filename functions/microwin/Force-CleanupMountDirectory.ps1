@@ -28,16 +28,13 @@ function Force-CleanupMountDirectory {
                 $null = reg query $hiveName 2>$null
                 if ($LASTEXITCODE -eq 0) {
                     # Registry hive is loaded, try to unload it with retries
-                    $attempts = 0
-                    $maxAttempts = 10
-                    do {
-                        $attempts++
+                    while ($true) {
                         reg unload $hiveName 2>$null
                         if ($LASTEXITCODE -eq 0) {
                             break
                         }
                         Start-Sleep -Milliseconds 100
-                    } until ($attempts -ge $maxAttempts)
+                    }
                 }
             } catch {
                 # Hive not loaded or error checking - continue
