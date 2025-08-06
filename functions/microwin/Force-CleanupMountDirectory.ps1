@@ -44,7 +44,7 @@ function Force-CleanupMountDirectory {
 
         # Try to set the mount directory and its contents to not readonly
         try {
-            if (Test-Path $MountPath) {
+            if (Test-Path "$MountPath") {
                 & attrib -R "$MountPath\*" /S /D 2>$null
             }
         } catch {
