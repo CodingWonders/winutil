@@ -40,11 +40,9 @@ function Copy-Files {
                 try {
                     Copy-Item $file.FullName ($destination+$restpath) -ErrorAction Stop -Force:$force
 
-                    # Use more robust method to remove ReadOnly attribute
-                    $copiedFile = Get-Item -Path ($destination+$restpath) -Force -ErrorAction SilentlyContinue
-                    if ($copiedFile -and ($copiedFile.Attributes -band [System.IO.FileAttributes]::ReadOnly)) {
-                        $copiedFile.Attributes = $copiedFile.Attributes -band (-bnot [System.IO.FileAttributes]::ReadOnly)
-                    }
+
+                    # Remove ReadOnly attribute using attrib for consistency
+                    & attrib -R ($destination+$restpath) 2>$null
 
                     # Force garbage collection to release file handles
                     $copiedFile = $null
@@ -53,8 +51,8 @@ function Copy-Files {
                     # Try alternative method if standard copy fails
                     try {
                         [System.IO.File]::Copy($file.FullName, ($destination+$restpath), $force)
-                        # Remove ReadOnly using .NET method
-                        [System.IO.File]::SetAttributes(($destination+$restpath), [System.IO.File]::GetAttributes(($destination+$restpath)) -band (-bnot [System.IO.FileAttributes]::ReadOnly))
+                        # Remove ReadOnly attribute using attrib for consistency
+                        & attrib -R ($destination+$restpath) 2>$null
                     } catch {
                         Write-Debug "Alternative copy method also failed: $($_.Exception.Message)"
                     }

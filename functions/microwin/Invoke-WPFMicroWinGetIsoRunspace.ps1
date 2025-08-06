@@ -358,27 +358,8 @@ function Invoke-WPFMicroWinGetIsoRunspace {
                 try {
 
                     $totalTime = Measure-Command {
-                        # Use native Copy-Item instead of Copy-Files function
-                        Write-Host "Starting copy operation with robocopy for better performance..."
-                        $robocopyArgs = @(
-                            "$($driveLetter):",
-                            "$mountDir",
-                            "/E",        # Copy subdirectories, including empty ones
-                            "/R:3",      # Retry 3 times on failed copies
-                            "/W:1",      # Wait 1 second between retries
-                            "/MT:8",     # Multi-threaded copying with 8 threads
-                            "/XJ"        # Exclude junction points
-                        )
-
-                        $robocopyResult = Start-Process -FilePath "robocopy" -ArgumentList $robocopyArgs -Wait -PassThru -NoNewWindow
-
-                        # Robocopy exit codes: 0-7 are success, 8+ are errors
-                        if ($robocopyResult.ExitCode -gt 7) {
-                            throw "Robocopy failed with exit code: $($robocopyResult.ExitCode)"
-                        }
-
-                        Write-Host "Robocopy completed with exit code: $($robocopyResult.ExitCode)"
-
+                        Copy-Files -Path "$($driveLetter):" -Destination "$mountDir" -Recurse -Force
+                        
                         # Force UI update during long operation
                         $sync.form.Dispatcher.Invoke([action]{
                             [System.Windows.Forms.Application]::DoEvents()
@@ -386,20 +367,7 @@ function Invoke-WPFMicroWinGetIsoRunspace {
                     }
                     Write-Host "Copy complete! Total Time: $($totalTime.Minutes) minutes, $($totalTime.Seconds) seconds"
                 } catch {
-
-                    # Fallback to PowerShell Copy-Item if robocopy fails
-                    try {
-                        $totalTime = Measure-Command {
-                            Copy-Item -Path "$($driveLetter):*" -Destination "$mountDir" -Recurse -Force
-                            # Force UI update during long operation
-                            $sync.form.Dispatcher.Invoke([action]{
-                                [System.Windows.Forms.Application]::DoEvents()
-                            })
-                        }
-                        Write-Host "Fallback copy complete! Total Time: $($totalTime.Minutes) minutes, $($totalTime.Seconds) seconds"
-                    } catch {
-                        throw $_
-                    }
+                    throw $_
                 }                $sync.form.Dispatcher.Invoke([action]{
                     Set-WinUtilTaskbaritem -state "Normal" -value (8 / $totalSteps) -overlay "logo"
                     # Invoke-MicrowinBusyInfo -action "wip" -message "Processing Windows image... (Step 8/$totalSteps)" -interactive $false
@@ -460,6 +428,7 @@ function Invoke-WPFMicroWinGetIsoRunspace {
                         $sync.form.Dispatcher.Invoke([action]{
                             $sync.MicrowinWindowsFlavors.SelectedIndex = $_.ImageIndex - 1
                         })
+                        break  # Exit the loop since we found the Pro edition
                     }
                     # Allow UI updates during this loop
                     $sync.form.Dispatcher.Invoke([action]{

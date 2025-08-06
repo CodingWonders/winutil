@@ -27,7 +27,17 @@ function Force-CleanupMountDirectory {
             try {
                 $null = reg query $hiveName 2>$null
                 if ($LASTEXITCODE -eq 0) {
-                    reg unload $hiveName 2>$null
+                    # Registry hive is loaded, try to unload it with retries
+                    $attempts = 0
+                    $maxAttempts = 10
+                    do {
+                        $attempts++
+                        reg unload $hiveName 2>$null
+                        if ($LASTEXITCODE -eq 0) {
+                            break
+                        }
+                        Start-Sleep -Milliseconds 100
+                    } until ($attempts -ge $maxAttempts)
                 }
             } catch {
                 # Hive not loaded or error checking - continue
@@ -35,12 +45,7 @@ function Force-CleanupMountDirectory {
         }
 
         # Force garbage collection to release any PowerShell file handles
-        [System.GC]::Collect()
-        [System.GC]::WaitForPendingFinalizers()
-        [System.GC]::Collect()
-
-        # Wait a moment for handles to be released
-        Start-Sleep -Seconds 2
+        Invoke-GarbageCollection -WaitSeconds 2
 
         # Try to set the mount directory and its contents to not readonly
         try {
@@ -64,8 +69,7 @@ function Force-CleanupMountDirectory {
         }
 
         # Final cleanup
-        [System.GC]::Collect()
-        [System.GC]::WaitForPendingFinalizers()
+        Invoke-GarbageCollection
 
         return $true
 

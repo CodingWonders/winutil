@@ -30,29 +30,7 @@ function Invoke-WPFMicroWinRunspace {
         param($MicroWinSettings, $DebugPreference)
 
         # Function to set DISM-compatible permissions on a directory
-        function Set-DismCompatiblePermissions {
-            param([string]$Path)
 
-            try {
-                # Use icacls for reliable permission setting with language-independent SIDs
-                # Grant full control to Administrators (S-1-5-32-544)
-                & icacls "$Path" /grant "*S-1-5-32-544:(OI)(CI)F" /T /C | Out-Null
-                
-                # Grant full control to SYSTEM (S-1-5-18)
-                & icacls "$Path" /grant "*S-1-5-18:(OI)(CI)F" /T /C | Out-Null
-                
-                # Grant full control to current user
-                $currentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
-                & icacls "$Path" /grant "${currentUser}:(OI)(CI)F" /T /C | Out-Null
-                
-                # Grant modify to Authenticated Users (S-1-5-11) for subfolders and files
-                & icacls "$Path" /grant "*S-1-5-11:(OI)(CI)M" /T /C | Out-Null
-                
-                return $true
-            } catch {
-                return $false
-            }
-        }
 
         $sync.ProcessRunning = $true
 
@@ -116,12 +94,6 @@ function Invoke-WPFMicroWinRunspace {
             })
 
             Write-Host "Target ISO location: $SaveDialogFileName"
-
-            # Performance optimization: Determine optimal thread count
-            $coreCount = (Get-WmiObject -Class Win32_Processor | Measure-Object -Property NumberOfCores -Sum).Sum
-            $logicalProcessors = (Get-WmiObject -Class Win32_ComputerSystem).NumberOfLogicalProcessors
-            $optimalThreads = [Math]::Min($logicalProcessors, [Math]::Max(2, $coreCount))
-            Write-Host "System has $coreCount cores, $logicalProcessors logical processors. Using $optimalThreads threads for optimal performance."
 
             # Extract settings from hashtable
             $index = $MicroWinSettings.selectedIndex
@@ -213,10 +185,7 @@ function Invoke-WPFMicroWinRunspace {
             }
 
             # Check if running as administrator
-            $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
-            $isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-
-            if (-not $isAdmin) {
+            if (-not (New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
                 $msg = "Administrator privileges are required to mount and modify Windows images. Please run WinUtil as Administrator and try again."
                 Write-Host $msg
                 $sync.form.Dispatcher.Invoke([action]{
@@ -286,12 +255,6 @@ function Invoke-WPFMicroWinRunspace {
 
                 # Pre-mount system checks
 
-                # Check if DISM is available and working
-                try {
-                    $dismCheck = & dism /? 2>&1
-                } catch {
-                }
-
                 # Check available disk space
                 try {
                     $scratchDrive = Split-Path $scratchDir -Qualifier
@@ -303,21 +266,10 @@ function Invoke-WPFMicroWinRunspace {
                 } catch {
                 }
 
-                # Check if scratch directory is accessible and set proper permissions
+                # Check if scratch directory is accessible
                 try {
                     if (-not (Test-Path $scratchDir)) {
                         New-Item -Path $scratchDir -ItemType Directory -Force | Out-Null
-                    }
-
-                    # Set proper permissions for DISM operations using the helper function
-                    $permissionsSet = Set-DismCompatiblePermissions -Path $scratchDir
-
-                    if ($permissionsSet) {
-                        # Verify permissions were set correctly
-                        $newAcl = Get-Acl -Path $scratchDir
-                        foreach ($access in $newAcl.Access) {
-                        }
-                    } else {
                     }
 
                     # Test write access
@@ -357,22 +309,14 @@ function Invoke-WPFMicroWinRunspace {
                 foreach ($wimFilePath in $wimFilePaths) {
                     if (Test-Path $wimFilePath) {
                         try {
-                            $wimItem = Get-Item -Path $wimFilePath -Force
-                            if ($wimItem.Attributes -band [System.IO.FileAttributes]::ReadOnly) {
-                                $wimItem.Attributes = $wimItem.Attributes -band (-bnot [System.IO.FileAttributes]::ReadOnly)
-
-                                # Verify the change was successful
-                                $wimItem.Refresh()
-                                if ($wimItem.Attributes -band [System.IO.FileAttributes]::ReadOnly) {
-                                    $criticalWimError = $true
-                                } else {
-                                }
-                            } else {
+                            # Remove ReadOnly attribute using attrib command
+                            & attrib -R "$wimFilePath" 2>$null
+                            if ($LASTEXITCODE -ne 0) {
+                                $criticalWimError = $true
                             }
                         } catch {
                             $criticalWimError = $true
                         }
-                    } else {
                     }
                 }
 
@@ -899,14 +843,25 @@ function Invoke-WPFMicroWinRunspace {
 
                     # Last attempt - try multiple fallback strategies
 
-                    # Try DISM discard
+
+                    # First, commit the image
                     try {
-                        $dismResult = & dism /english /unmount-image /mountdir:"$scratchDir" /discard /loglevel:1
-                        if ($LASTEXITCODE -eq 0) {
-                            $dismountSuccess = $true
-                        } else {
-                        }
-                    } catch {
+                        & dism /english /commit-image /mountdir:"$scratchDir" /loglevel:1
+                    } catch {}
+
+                    # Now, keep discarding the image in a loop
+                    $discardAttempts = 0
+                    $maxDiscardAttempts = 6
+                    while (-not $dismountSuccess -and $discardAttempts -lt $maxDiscardAttempts) {
+                        try {
+                            $dismResult = & dism /english /unmount-image /mountdir:"$scratchDir" /discard /loglevel:1
+                            if ($LASTEXITCODE -eq 0) {
+                                $dismountSuccess = $true
+                                break
+                            }
+                        } catch {}
+                        $discardAttempts++
+                        Start-Sleep -Seconds 5
                     }
 
                     # Try PowerShell discard if DISM failed
@@ -942,9 +897,8 @@ function Invoke-WPFMicroWinRunspace {
             try {
                 Write-Host "Exporting image into $mountDir\sources\install2.wim with optimized settings..."
                 try {
-                    # Use Fast compression for better performance, especially during development/testing
-                    # Users can change this to "Max" if they prefer smaller file size over speed
-                    Export-WindowsImage -SourceImagePath "$mountDir\sources\install.wim" -SourceIndex $index -DestinationImagePath "$mountDir\sources\install2.wim" -CompressionType "Fast"
+                    # Use Max compression for smaller file size (slower, but more efficient)
+                    Export-WindowsImage -SourceImagePath "$mountDir\sources\install.wim" -SourceIndex $index -DestinationImagePath "$mountDir\sources\install2.wim" -CompressionType "Max"
                 } catch {
                     # Fall back to DISM with optimized settings
                     dism /english /export-image /sourceimagefile="$mountDir\sources\install.wim" /sourceindex=$index /destinationimagefile="$mountDir\sources\install2.wim" /compress:fast /checkintegrity /verify /loglevel:1
