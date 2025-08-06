@@ -12,7 +12,7 @@ function Invoke-GarbageCollection {
 
     .EXAMPLE
     Invoke-GarbageCollection
-    
+
     .EXAMPLE
     Invoke-GarbageCollection -WaitSeconds 2
     #>

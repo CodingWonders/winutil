@@ -346,7 +346,7 @@ function Invoke-WPFMicroWinRunspace {
                     } catch {
                         # Fall back to DISM command
                         $dismResult = & dism /english /mount-image /imagefile:"$mountDir\sources\install.wim" /index:$index /mountdir:"$currentScratchDir" /optimize /loglevel:1
-                        
+
                         if ($LASTEXITCODE -eq 0) {
                             $mountSuccess = $true
                             $scratchDir = $currentScratchDir

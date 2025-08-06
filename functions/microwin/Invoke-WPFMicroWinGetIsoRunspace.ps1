@@ -359,7 +359,7 @@ function Invoke-WPFMicroWinGetIsoRunspace {
 
                     $totalTime = Measure-Command {
                         Copy-Files -Path "$($driveLetter):" -Destination "$mountDir" -Recurse -Force
-                        
+
                         # Force UI update during long operation
                         $sync.form.Dispatcher.Invoke([action]{
                             [System.Windows.Forms.Application]::DoEvents()
