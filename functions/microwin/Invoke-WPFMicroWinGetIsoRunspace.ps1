@@ -402,10 +402,8 @@ function Invoke-WPFMicroWinGetIsoRunspace {
                     $images = Get-WindowsImage -ImagePath $wimFile
 
                     $images | ForEach-Object {
-                        $imageIdx = $_.ImageIndex
-                        $imageName = $_.ImageName
                         $sync.form.Dispatcher.Invoke([action]{
-                            $sync.MicrowinWindowsFlavors.Items.Add("$imageIdx : $imageName")
+                            $sync.MicrowinWindowsFlavors.Items.Add("$_.ImageIndex : $_.ImageName")
                         })
                     }
                 } catch {

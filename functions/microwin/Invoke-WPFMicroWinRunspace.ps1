@@ -395,11 +395,6 @@ function Invoke-WPFMicroWinRunspace {
                         $currentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent()
                         $principal = New-Object System.Security.Principal.WindowsPrincipal($currentUser)
                         $isAdmin = $principal.IsInRole([System.Security.Principal.WindowsBuiltInRole]::Administrator)
-
-                        # Show privilege status again
-                        $tokenPrivs = whoami /priv | Out-String
-                        $tokenPrivs -split "`n" | Where-Object { $_ -match "Se(Backup|Restore|Security|TakeOwnership|ManageVolume)Privilege" } | ForEach-Object {
-                        }
                     } catch {
                     }
 
@@ -460,7 +455,7 @@ function Invoke-WPFMicroWinRunspace {
                     if (Test-Path $driverPath) {
                         Write-Host "Adding Windows Drivers with optimized settings image($scratchDir) drivers($driverPath)"
                         # Use optimized DISM settings for better performance
-                        dism /English /image:$scratchDir /add-driver /driver:$driverPath /recurse /forceunsigned /loglevel:1 | Out-Host
+                        dism /English /image:$scratchDir /add-driver /driver:$driverPath /recurse /forceunsigned | Out-Host
                     } else {
                         Write-Host "Path to drivers is invalid continuing without driver injection"
                     }
