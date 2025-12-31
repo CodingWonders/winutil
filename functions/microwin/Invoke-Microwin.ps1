@@ -452,8 +452,11 @@ public class PowerManagement {
             Write-Error $msg
             Invoke-MicrowinBusyInfo -action "warning" -message "Unmount Failed"
             Set-WinUtilTaskbaritem -state "Error" -value 1 -overlay "warning"
-            return
+            $unmountFailedFatal = $true
         }
+    }
+    if ($unmountFailedFatal) {
+        return
     }
     try {
 
