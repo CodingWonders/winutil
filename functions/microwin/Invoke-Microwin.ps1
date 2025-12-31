@@ -67,6 +67,11 @@ public class PowerManagement {
     $mountDir = $sync.MicrowinMountDir.Text
     $scratchDir = $sync.MicrowinScratchDir.Text
 
+    if ($scratchDir -eq "Scratch")
+    {
+        $scratchDir = "$env:TEMP\microwin_scratch"
+    }
+
     # Detect if the Windows image is an ESD file and convert it to WIM
     if (-not (Test-Path -Path "$mountDir\sources\install.wim" -PathType Leaf) -and (Test-Path -Path "$mountDir\sources\install.esd" -PathType Leaf)) {
         Write-Host "Exporting Windows image to a WIM file, keeping the index we want to work on. This can take several minutes, depending on the performance of your computer..."
