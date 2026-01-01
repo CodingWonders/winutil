@@ -431,19 +431,42 @@ public class PowerManagement {
         dism /English /image:$scratchDir /Cleanup-Image /StartComponentCleanup /ResetBase
         Write-Host "Cleanup complete."
 
-        Write-Host "Saving image..."
-        try {
-            Save-WindowsImage -Path "$scratchDir" -ErrorAction -CheckIntegrity Stop
-        } catch {
-            dism /English /commit-image /mountdir:"$scratchDir"
-        }
+        # Initialize flags
+        $imageCommitted = $false
+        $imageUnmounted = $false
 
-        Write-Host "Unmounting image..."
-        try {
-            Dismount-WindowsImage -Path "$scratchDir" -ErrorAction Stop
-        } catch {
-            dism /English /Unmount-Image /mountdir:"$scratchDir" /commit
-        }
+        Write-Host "Starting image save and unmount process..."
+
+        # Loop until both operations are successful
+        do {
+            try {
+                if (-not $imageCommitted) {
+                    Write-Host "Attempting to commit image changes..."
+                    # Try PowerShell cmdlet first, fallback to DISM.exe if it fails
+                    try {
+                        Save-WindowsImage -Path "$scratchDir" -ErrorAction Stop -CheckIntegrity
+                        $imageCommitted = $true
+                    } catch {
+                        dism /English /commit-image /mountdir:"$scratchDir"
+                        if ($LASTEXITCODE -eq 0) { $imageCommitted = $true }
+                    }
+                }
+
+                if ($imageCommitted -and -not $imageUnmounted) {
+                    Write-Host "Attempting to unmount image..."
+                    # Perform the unmount operation
+                    Dismount-WindowsImage -Path "$scratchDir" -Save -ErrorAction Stop
+                    $imageUnmounted = $true
+                }
+            } catch {
+                # If any part of the try block fails, the flags remain false
+                Write-Warning "Operation failed. This is often caused by file locks."
+                Write-Host "Retrying in 5 seconds..."
+                Start-Sleep -Seconds 5
+            }
+        } until ($imageCommitted -eq $true -and $imageUnmounted -eq $true)
+
+        Write-Host "Image successfully saved and unmounted." -ForegroundColor Green
     }
     try {
 
