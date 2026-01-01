@@ -435,7 +435,7 @@ public class PowerManagement {
         try {
             Save-WindowsImage -Path "$scratchDir" -ErrorAction -CheckIntegrity Stop
         } catch {
-            dism /English /commit-wim /mountdir:"$scratchDir"
+            dism /English /commit-image /mountdir:"$scratchDir"
         }
 
         Write-Host "Unmounting image..."
