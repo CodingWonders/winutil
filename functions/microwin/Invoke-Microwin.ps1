@@ -431,32 +431,19 @@ public class PowerManagement {
         dism /English /image:$scratchDir /Cleanup-Image /StartComponentCleanup /ResetBase
         Write-Host "Cleanup complete."
 
+        Write-Host "Saving image..."
+        try {
+            Save-WindowsImage -Path "$scratchDir" -ErrorAction -CheckIntegrity Stop
+        } catch {
+            dism /English /commit-wim /mountdir:"$scratchDir"
+        }
+
         Write-Host "Unmounting image..."
-        $retryCount = 0
-        $unmounted = $false
-        $logPath = "$env:LOCALAPPDATA\winutil\logs"
-
-        while ($retryCount -lt 4 -and -not $unmounted) {
-            try {
-                Dismount-WindowsImage -Path "$scratchDir" -Save -ErrorAction Stop
-                $unmounted = $true
-            } catch {
-                $retryCount++
-                Write-Warning "Unmount failed (Attempt $retryCount of 4). Retrying in 5 seconds..."
-                Start-Sleep -Seconds 5
-            }
+        try {
+            Dismount-WindowsImage -Path "$scratchDir" -ErrorAction Stop
+        } catch {
+            dism /English /Unmount-Image /mountdir:"$scratchDir" /commit
         }
-
-        if (-not $unmounted) {
-            $msg = "Failed to unmount image after 4 attempts. Please retry making the ISO. If this persists, create a support issue in the CTT Discord under Windows Utils and Support with the log file found at: $logPath"
-            Write-Error $msg
-            Invoke-MicrowinBusyInfo -action "warning" -message "Unmount Failed"
-            Set-WinUtilTaskbaritem -state "Error" -value 1 -overlay "warning"
-            $unmountFailedFatal = $true
-        }
-    }
-    if ($unmountFailedFatal) {
-        return
     }
     try {
 
