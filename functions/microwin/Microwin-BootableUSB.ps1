@@ -21,8 +21,8 @@ function MicroWin-BootableUSB {
 
     $Response = [System.Windows.MessageBox]::Show($msgText, $msgTitle, $msgButton, $msgIcon)
     if ($Response -ne "Yes") {
-     Write-Warning "Operation cancelled by user."
-     return 
+        Write-Warning "Operation cancelled by user."
+        return 
     }   
 
     try {
